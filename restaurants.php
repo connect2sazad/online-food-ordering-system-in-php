@@ -133,7 +133,7 @@ session_start();
 						
 													 echo' <div class="col-sm-12 col-md-12 col-lg-8 text-xs-center text-sm-left">
 															<div class="entry-logo">
-																<a class="img-fluid" href="dishes.php?res_id='.$rows['rs_id'].'" > <img src="admin/Res_img/'.$rows['image'].'" alt="Food logo"></a>
+																<a class="img-fluid" href="dishes.php?res_id='.$rows['rs_id'].'" > <img src="'.$rows['image'].'" alt="Food logo"></a>
 															</div>
 															<!-- end:Logo -->
 															<div class="entry-dscr">

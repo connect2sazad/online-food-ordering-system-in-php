@@ -229,7 +229,7 @@ session_start();
 																								
 																								
 																								<td><div class="col-md-3 col-lg-8 m-b-10">
-																								<center><img src="Res_img/dishes/'.$rows['img'].'" class="img-responsive  radius" style="max-height:100px;max-width:150px;" /></center>
+																								<center><img src="'.$rows['img'].'" class="img-responsive  radius" style="max-height:100px;max-width:150px;" /></center>
 																								</div></td>
 																								
 																							

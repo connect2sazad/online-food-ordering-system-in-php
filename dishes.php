@@ -87,7 +87,7 @@ include_once 'product-action.php'; //including controller
                         <div class="row">
                             <div class="col-xs-12 col-sm-12  col-md-4 col-lg-4 profile-img">
                                 <div class="image-wrap">
-                                    <figure><?php echo '<img src="admin/Res_img/'.$rows['image'].'" alt="Restaurant logo">'; ?></figure>
+                                    <figure><?php echo '<img src="'.$rows['image'].'" alt="Restaurant logo">'; ?></figure>
                                 </div>
                             </div>
 							
@@ -220,7 +220,7 @@ $item_total += ($item["price"]*$item["quantity"]); // calculating current price 
                                         <div class="col-xs-12 col-sm-12 col-lg-8">
 										<form method="post" action='dishes.php?res_id=<?php echo $_GET['res_id'];?>&action=add&id=<?php echo $product['d_id']; ?>'>
                                             <div class="rest-logo pull-left">
-                                                <a class="restaurant-logo pull-left" href="#"><?php echo '<img src="admin/Res_img/dishes/'.$product['img'].'" alt="Food logo">'; ?></a>
+                                                <a class="restaurant-logo pull-left" href="#"><?php echo '<img src="'.$product['img'].'" alt="Food logo">'; ?></a>
                                             </div>
                                             <!-- end:Logo -->
                                             <div class="rest-descr">
