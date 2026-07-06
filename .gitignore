@@ -1,0 +1,31 @@
+# Composer dependencies
+/vendor/
+
+# Composer lock file (optional: usually COMMIT this, so only ignore if you have a reason)
+# composer.lock
+
+# Composer PHAR installer (if downloaded locally)
+composer.phar
+
+# Environment files (common in PHP projects)
+.env
+.env.local
+.env.*.local
+
+# Cache and logs (framework-dependent, but commonly used)
+/var/
+/cache/
+/logs/
+
+# PHPUnit / testing
+.phpunit.result.cache
+
+# IDE / editor files
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# OS files
+.DS_Store
+Thumbs.db
