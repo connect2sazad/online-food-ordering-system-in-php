@@ -26,71 +26,57 @@ session_start();
 $error = "";
 $success = "";
 
-if(isset($_POST['submit']))
-{
-    if(empty($_POST['d_name'])||empty($_POST['about'])||$_POST['price']==''||$_POST['res_name']=='')
-    {
+if (isset($_POST['submit'])) {
+    if (empty($_POST['d_name']) || empty($_POST['about']) || $_POST['price'] == '' || $_POST['res_name'] == '') {
         $error = '<div class="alert alert-danger alert-dismissible fade show">
         <button type="button" class="close" data-dismiss="alert">&times;</button>
         <strong>All fields Must be Fillup!</strong>
         </div>';
-    }
-    else
-    {
+    } else {
         $fname = $_FILES['file']['name'];
         $temp  = $_FILES['file']['tmp_name'];
         $fsize = $_FILES['file']['size'];
 
         $extension = strtolower(pathinfo($fname, PATHINFO_EXTENSION));
-        $fnew = uniqid().'.'.$extension;
+        $fnew = uniqid() . '.' . $extension;
 
-        if($extension == 'jpg' || $extension == 'png' || $extension == 'gif')
-        {
-            if($fsize >= 1000000)
-            {
+        if ($extension == 'jpg' || $extension == 'png' || $extension == 'gif') {
+            if ($fsize >= 1000000) {
                 $error = '<div class="alert alert-danger">Max Image Size is 1MB!</div>';
-            }
-            else
-            {
+            } else {
                 try {
 
                     // ✅ S3 UPLOAD
                     $s3->putObject([
                         'Bucket'      => $bucket,
-                        'Key'         => 'dishes/'.$fnew,
+                        'Key'         => 'dishes/' . $fnew,
                         'SourceFile'  => $temp,
-                        'ACL'         => 'public-read',
                         'ContentType' => mime_content_type($temp)
                     ]);
 
                     // save DB
                     $sql = "INSERT INTO dishes(rs_id,title,slogan,price,img)
                     VALUES(
-                        '".$_POST['res_name']."',
-                        '".$_POST['d_name']."',
-                        '".$_POST['about']."',
-                        '".$_POST['price']."',
-                        '".$fnew."'
+                        '" . $_POST['res_name'] . "',
+                        '" . $_POST['d_name'] . "',
+                        '" . $_POST['about'] . "',
+                        '" . $_POST['price'] . "',
+                        '" . $fnew . "'
                     )";
 
-                    mysqli_query($db,$sql);
+                    mysqli_query($db, $sql);
 
                     $success = '<div class="alert alert-success alert-dismissible fade show">
                     <button type="button" class="close" data-dismiss="alert">&times;</button>
                     <strong>Success!</strong> New Dish Added Successfully.
                     </div>';
-
-                } catch(Exception $e) {
-                    $error = '<div class="alert alert-danger">'.$e->getMessage().'</div>';
+                } catch (Exception $e) {
+                    $error = '<div class="alert alert-danger">' . $e->getMessage() . '</div>';
                 }
             }
-        }
-        elseif($extension == '')
-        {
+        } elseif ($extension == '') {
             $error = '<div class="alert alert-danger">Select image</div>';
-        }
-        else
-        {
+        } else {
             $error = '<div class="alert alert-danger">Invalid extension! Only jpg, png, gif allowed.</div>';
         }
     }
@@ -112,79 +98,188 @@ if(isset($_POST['submit']))
 
 <body class="fix-header">
 
-<div id="main-wrapper">
-
-    <!-- HEADER (UNCHANGED) -->
-    <div class="header">
-        <nav class="navbar top-navbar navbar-expand-md navbar-light">
-            <div class="navbar-header">
-                <a class="navbar-brand" href="index.html">
-                    <b><img src="images/logo.png" alt=""></b>
-                    <span><img src="images/logo-text.png" alt=""></span>
-                </a>
-            </div>
-        </nav>
+    <div class="preloader">
+        <svg class="circular" viewBox="25 25 50 50">
+            <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10" />
+        </svg>
     </div>
+    <!-- Main wrapper  -->
+    <div id="main-wrapper">
+        <!-- header header  -->
+        <div class="header">
+            <nav class="navbar top-navbar navbar-expand-md navbar-light">
+                <!-- Logo -->
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="index.html">
+                        <!-- Logo icon -->
+                        <b><img src="images/logo.png" alt="homepage" class="dark-logo" /></b>
+                        <!--End Logo icon -->
+                        <!-- Logo text -->
+                        <span><img src="images/logo-text.png" alt="homepage" class="dark-logo" /></span>
+                    </a>
+                </div>
+                <!-- End Logo -->
+                <div class="navbar-collapse">
+                    <!-- toggle and nav items -->
+                    <ul class="navbar-nav mr-auto mt-md-0">
+                        <!-- This is  -->
+                        <li class="nav-item"> <a class="nav-link nav-toggler hidden-md-up text-muted  " href="javascript:void(0)"><i class="mdi mdi-menu"></i></a> </li>
+                        <li class="nav-item m-l-10"> <a class="nav-link sidebartoggler hidden-sm-down text-muted  " href="javascript:void(0)"><i class="ti-menu"></i></a> </li>
 
-    <!-- SIDEBAR (UNCHANGED) -->
-    <div class="left-sidebar">
-        <div class="scroll-sidebar">
-            <nav class="sidebar-nav">
-                <ul>
-                    <li><a href="dashboard.php">Dashboard</a></li>
-                    <li><a href="add_restraunt.php">Add Restaurant</a></li>
-                    <li><a href="add_menu.php">Add Menu</a></li>
-                </ul>
+
+                    </ul>
+                    <!-- User profile and search -->
+                    <ul class="navbar-nav my-lg-0">
+
+                        <!-- Search -->
+                        <li class="nav-item hidden-sm-down search-box"> <a class="nav-link hidden-sm-down text-muted  " href="javascript:void(0)"><i class="ti-search"></i></a>
+                            <form class="app-search">
+                                <input type="text" class="form-control" placeholder="Search here"> <a class="srh-btn"><i class="ti-close"></i></a>
+                            </form>
+                        </li>
+                        <!-- Comment -->
+                        <li class="nav-item dropdown">
+
+                            <div class="dropdown-menu dropdown-menu-right mailbox animated zoomIn">
+                                <ul>
+                                    <li>
+                                        <div class="drop-title">Notifications</div>
+                                    </li>
+
+                                    <li>
+                                        <a class="nav-link text-center" href="javascript:void(0);"> <strong>Check all notifications</strong> <i class="fa fa-angle-right"></i> </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <!-- End Comment -->
+
+                        <!-- Profile -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-muted  " href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img src="images/users/5.jpg" alt="user" class="profile-pic" /></a>
+                            <div class="dropdown-menu dropdown-menu-right animated zoomIn">
+                                <ul class="dropdown-user">
+                                    <li><a href="logout.php"><i class="fa fa-power-off"></i> Logout</a></li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
             </nav>
         </div>
-    </div>
+        <!-- End header header -->
+        <!-- Left Sidebar  -->
+        <div class="left-sidebar">
+            <!-- Sidebar scroll-->
+            <div class="scroll-sidebar">
+                <!-- Sidebar navigation-->
+                <nav class="sidebar-nav">
+                    <ul id="sidebarnav">
+                        <li class="nav-devider"></li>
+                        <li class="nav-label">Home</li>
+                        <li> <a class="has-arrow  " href="#" aria-expanded="false"><i class="fa fa-tachometer"></i><span class="hide-menu">Dashboard</span></a>
+                            <ul aria-expanded="false" class="collapse">
+                                <li><a href="dashboard.php">Dashboard</a></li>
 
-    <!-- PAGE CONTENT -->
-    <div class="page-wrapper">
+                            </ul>
+                        </li>
+                        <li class="nav-label">Log</li>
+                        <li> <a class="has-arrow  " href="#" aria-expanded="false"> <span><i class="fa fa-user f-s-20 "></i></span><span class="hide-menu">Users</span></a>
+                            <ul aria-expanded="false" class="collapse">
+                                <li><a href="allusers.php">All Users</a></li>
+                                <li><a href="add_users.php">Add Users</a></li>
 
-        <div class="container-fluid">
 
-            <?php echo $error; echo $success; ?>
+                            </ul>
+                        </li>
+                        <li> <a class="has-arrow  " href="#" aria-expanded="false"><i class="fa fa-archive f-s-20 color-warning"></i><span class="hide-menu">Store</span></a>
+                            <ul aria-expanded="false" class="collapse">
+                                <li><a href="allrestraunt.php">All Stores</a></li>
+                                <li><a href="add_category.php">Add Category</a></li>
+                                <li><a href="add_restraunt.php">Add Restaurant</a></li>
 
-            <div class="card">
+                            </ul>
+                        </li>
+                        <li> <a class="has-arrow  " href="#" aria-expanded="false"><i class="fa fa-cutlery" aria-hidden="true"></i><span class="hide-menu">Menu</span></a>
+                            <ul aria-expanded="false" class="collapse">
+                                <li><a href="all_menu.php">All Menues</a></li>
+                                <li><a href="add_menu.php">Add Menu</a></li>
 
-                <div class="card-header">
-                    <h4>Add Menu to Restaurant</h4>
-                </div>
 
-                <div class="card-body">
+                            </ul>
+                        </li>
+                        <li> <a class="has-arrow  " href="#" aria-expanded="false"><i class="fa fa-shopping-cart" aria-hidden="true"></i><span class="hide-menu">Orders</span></a>
+                            <ul aria-expanded="false" class="collapse">
+                                <li><a href="all_orders.php">All Orders</a></li>
 
-                    <form method="post" enctype="multipart/form-data">
+                            </ul>
+                        </li>
 
-                        <input type="text" name="d_name" class="form-control mb-2" placeholder="Dish Name">
-                        <input type="text" name="about" class="form-control mb-2" placeholder="About">
-                        <input type="text" name="price" class="form-control mb-2" placeholder="Price">
-
-                        <input type="file" name="file" class="form-control mb-2">
-
-                        <select name="res_name" class="form-control mb-3">
-                            <option value="">Select Restaurant</option>
-                            <?php
-                            $res = mysqli_query($db,"select * from restaurant");
-                            while($row=mysqli_fetch_array($res)){
-                                echo '<option value="'.$row['rs_id'].'">'.$row['title'].'</option>';
-                            }
-                            ?>
-                        </select>
-
-                        <button type="submit" name="submit" class="btn btn-success">
-                            Save
-                        </button>
-
-                    </form>
-
-                </div>
+                    </ul>
+                </nav>
+                <!-- End Sidebar navigation -->
             </div>
-
+            <!-- End Sidebar scroll-->
         </div>
-    </div>
+        <!-- End Left Sidebar  -->
+        <!-- Page wrapper  -->
+        <div class="page-wrapper">
 
-</div>
+            <!-- Bread crumb -->
+            <div class="row page-titles">
+                <div class="col-md-5 align-self-center">
+                    <h3 class="text-primary">Dashboard</h3>
+                </div>
+
+            </div>
+            <!-- End Bread crumb -->
+            <!-- Container fluid  -->
+
+            <div class="container-fluid">
+
+                <?php echo $error;
+                echo $success; ?>
+
+                <div class="card">
+
+                    <div class="card-header">
+                        <h4>Add Menu to Restaurant</h4>
+                    </div>
+
+                    <div class="card-body">
+
+                        <form method="post" enctype="multipart/form-data">
+
+                            <input type="text" name="d_name" class="form-control mb-2" placeholder="Dish Name">
+                            <input type="text" name="about" class="form-control mb-2" placeholder="About">
+                            <input type="text" name="price" class="form-control mb-2" placeholder="Price">
+
+                            <input type="file" name="file" class="form-control mb-2">
+
+                            <select name="res_name" class="form-control mb-3">
+                                <option value="">Select Restaurant</option>
+                                <?php
+                                $res = mysqli_query($db, "select * from restaurant");
+                                while ($row = mysqli_fetch_array($res)) {
+                                    echo '<option value="' . $row['rs_id'] . '">' . $row['title'] . '</option>';
+                                }
+                                ?>
+                            </select>
+
+                            <button type="submit" name="submit" class="btn btn-success">
+                                Save
+                            </button>
+
+                        </form>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
 
 </body>
+
 </html>
