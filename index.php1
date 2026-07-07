@@ -1,8 +1,0 @@
-<?php
-
-echo '<h1>
-
-Hello from Gitlab CI/CD.
-
-</h1>
-';
